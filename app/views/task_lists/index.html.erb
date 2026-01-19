@@ -1,0 +1,28 @@
+<h1>Minhas Listas</h1>
+
+<p><%= @task_lists.count %> lista(s)</p>
+
+<% if @task_lists.any? %>
+  <ul>
+    <% @task_lists.each do |list| %>
+      <li>
+        <strong><%= link_to list.title, list %></strong>
+        - <%= list.tasks.count %> Tarefa(s)
+        
+        <%= link_to "Editar", edit_task_list_path(list) %>
+        
+        <!-- FORM para excluir TaskList -->
+        <%= form_with(url: task_list_path(list), method: :delete, local: true, style: "display: inline;") do %>
+          <%= button_tag "Excluir", 
+                type: "submit",
+                onclick: "return confirm('Excluir esta lista e todas suas tarefas?');",
+                style: "border: none; background: none; color: red; text-decoration: underline; cursor: pointer; padding: 0; margin-left: 10px;" %>
+        <% end %>
+      </li>
+    <% end %>
+  </ul>
+<% else %>
+  <p>Você ainda não tem lista de tarefas.</p>
+<% end %>
+
+<%= link_to "Nova Lista", new_task_list_path %>

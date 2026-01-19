@@ -1,0 +1,9 @@
+<h1>Nova lista de tarefas</h1>
+
+<%= form_with(model: @task_list) do |form| %>
+  <%= form.text_field :title, placeholder: "Titulo" %>
+  <%= form.text_area :description, placeholder: "Descrição" %>
+  <%= form.submit "Criar" %>
+<% end %>
+
+<%= link_to "Voltar", task_lists_path %>

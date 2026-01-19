@@ -9,6 +9,8 @@
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
+    <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
+
     <%= yield :head %>
 
     <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
@@ -25,5 +27,12 @@
 
   <body>
     <%= yield %>
+    <% if user_signed_in? %>
+      <div style="position: fixed; top: 10px; right: 10px;">
+        Logado como: <strong><%= current_user.email %></strong>
+        <%= button_to "Sair", destroy_user_session_path, method: :delete, 
+              class: "btn btn-sm btn-outline-danger" %>
+      </div>
+    <% end %>
   </body>
 </html>

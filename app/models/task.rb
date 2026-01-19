@@ -3,13 +3,10 @@ class Task < ApplicationRecord
   
   validates :description, presence: true
   
-  # Define valor padrão para completed
   attribute :completed, :boolean, default: false
   
-  # Ordena por position por padrão
   default_scope { order(:position) }
   
-  # Define position automaticamente se não tiver
   before_create :set_default_position
   
   private
