@@ -1,36 +1,196 @@
-<h1><%= @task_list.title %></h1>
-
-<p><%= @task_list.description %></p>
-
-<h2>Tarefas - <%= @task_list.tasks.count %></h2>
-
-<% if @task_list.tasks.any? %>
-  <ul>
-    <% @task_list.tasks.each do |task| %>
-      <li>
-        <%= task.description %> - <%= task.completed ? "Feita" : "A Fazer" %>
+<div class="fade-in">
+  <div class="card card-custom mb-4">
+    <div class="card-body">
+      <div class="d-flex justify-content-between align-items-start">
+        <div>
+          <h1 class="h3 fw-bold mb-2">
+            <i class="bi bi-card-checklist text-primary me-2"></i>
+            <%= @task_list.title %>
+          </h1>
+          <% if @task_list.description.present? %>
+            <p class="text-muted mb-0"><%= @task_list.description %></p>
+          <% end %>
+        </div>
         
-        <%= link_to "Editar", edit_task_list_task_path(@task_list, task) %>
+        <div class="btn-group">
+          <%= link_to edit_task_list_path(@task_list), 
+                class: "btn btn-outline-primary",
+                title: "Editar lista" do %>
+            <i class="bi bi-pencil me-1"></i> Editar
+          <% end %>
+          
+          <%= link_to task_lists_path, 
+                class: "btn btn-outline-secondary",
+                title: "Voltar" do %>
+            <i class="bi bi-arrow-left me-1"></i> Voltar
+          <% end %>
+        </div>
+      </div>
+      
+      <div class="row mt-4 g-3">
+        <div class="col-md-4">
+          <div class="text-center p-3 bg-light rounded">
+            <div class="h4 fw-bold mb-0"><%= @task_list.tasks.count %></div>
+            <small class="text-muted">Total</small>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="text-center p-3 bg-info bg-opacity-10 rounded">
+            <div class="h4 fw-bold mb-0 text-info">
+              <%= @task_list.tasks.where(completed: false).count %>
+            </div>
+            <small class="text-muted">Pendentes</small>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="text-center p-3 bg-success bg-opacity-10 rounded">
+            <div class="h4 fw-bold mb-0 text-success">
+              <%= @task_list.tasks.where(completed: true).count %>
+            </div>
+            <small class="text-muted">Concluídas</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="card card-custom mb-4">
+    <div class="card-header bg-white">
+      <h5 class="mb-0">
+        <i class="bi bi-list-check me-2"></i>
+        Tarefas
+        <span class="badge bg-secondary ms-2"><%= @task_list.tasks.count %></span>
+      </h5>
+    </div>
+    
+    <div class="card-body p-0">
+      <% if @task_list.tasks.any? %>
+        <div class="list-group list-group-flush">
+          <% @task_list.tasks.each do |task| %>
+            <div class="list-group-item task-item <%= 'task-completed' if task.completed %>">
+              <div class="d-flex align-items-center">
+                <div class="me-3">
+                  <%= form_with(model: [@task_list, task], class: "d-inline") do |f| %>
+                    <button type="submit" 
+                            class="task-checkbox-btn <%= task.completed ? 'completed' : '' %>"
+                            onclick="this.form.requestSubmit(); return false;"
+                            title="<%= task.completed ? 'Desmarcar' : 'Marcar' %> como concluída">
+                      <i class="bi bi-check-lg"></i>
+                    </button>
+                    <%= f.hidden_field :completed, value: !task.completed %>
+                  <% end %>
+                </div>
+                
+                <div class="flex-grow-1">
+                  <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                      <span class="<%= 'text-decoration-line-through text-muted' if task.completed %>">
+                        <%= task.description %>
+                      </span>
+                      
+                      <% if task.due_date %>
+                        <small class="ms-2 <%= 'text-danger fw-bold' if task.due_date.to_date < Date.today && !task.completed %>">
+                          <i class="bi bi-calendar-event me-1"></i>
+                          <%= task.due_date.strftime("%d/%m/%Y") if task.due_date %>
+                        </small>
+                      <% end %>
+                      
+                      <% if task.notes.present? %>
+                        <small class="ms-2 text-muted d-block mt-1">
+                          <i class="bi bi-chat-left-text me-1"></i>
+                          <%= truncate(task.notes, length: 60) %>
+                        </small>
+                      <% end %>
+                    </div>
+                    
+                    <div class="btn-group btn-group-sm ms-3">
+                      <%= link_to edit_task_list_task_path(@task_list, task),
+                            class: "btn btn-outline-secondary btn-sm",
+                            title: "Editar tarefa" do %>
+                        <i class="bi bi-pencil"></i>
+                      <% end %>
+                      
+                      <%= button_to task_list_task_path(@task_list, task),
+                            method: :delete,
+                            class: "btn btn-outline-danger btn-sm",
+                            form: { 
+                              data: { 
+                                confirm: "Excluir esta tarefa?" 
+                              } 
+                            },
+                            title: "Excluir tarefa" do %>
+                        <i class="bi bi-trash"></i>
+                      <% end %>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <div class="text-center py-5">
+          <i class="bi bi-check2-all display-1 text-muted mb-3"></i>
+          <h5 class="text-muted">Nenhuma tarefa nesta lista</h5>
+          <p class="text-muted">Adicione sua primeira tarefa abaixo</p>
+        </div>
+      <% end %>
+    </div>
+  </div>
+  
+  <div class="card card-custom">
+    <div class="card-header bg-white">
+      <h5 class="mb-0">
+        <i class="bi bi-plus-circle text-primary me-2"></i>
+        Adicionar Nova Tarefa
+      </h5>
+    </div>
+    
+    <div class="card-body">
+      <%= form_with(model: [@task_list, @task_list.tasks.new], local: true) do |form| %>
+        <div class="row g-3 align-items-end">
+          <div class="col-md-7">
+            <div class="form-floating">
+              <%= form.text_field :description, 
+                    class: "form-control input-lg",
+                    placeholder: "Descrição da tarefa",
+                    required: true,
+                    id: "taskDescription" %>
+              <label for="taskDescription">O que precisa ser feito?</label>
+            </div>
+          </div>
+          
+          <div class="col-md-3">
+            <div class="form-floating">
+              <%= form.text_field :due_date,
+                    class: "form-control",
+                    placeholder: "DD/MM/AAAA",
+                    id: "taskDueDate" %>
+              <label for="taskDueDate">Data limite (opcional)</label>
+            </div>
+          </div>
+          
+          <div class="col-md-2">
+            <div class="d-grid">
+              <%= form.submit "Adicionar", 
+                    class: "btn btn-primary btn-lg" %>
+            </div>
+          </div>
+        </div>
         
-        <%= form_with(url: task_list_task_path(@task_list, task), method: :delete, local: true, style: "display: inline;") do %>
-          <%= button_tag "Excluir", 
-                type: "submit",
-                onclick: "return confirm('Excluir esta tarefa?');",
-                style: "border: none; background: none; color: red; text-decoration: underline; cursor: pointer; padding: 0; margin-left: 10px;" %>
-        <% end %>
-      </li>
-    <% end %>
-  </ul>
-<% else %>
-  <p>Nenhuma tarefa nesta lista ainda.</p>
-<% end %>
-
-<h3>Adicionar Nova Tarefa</h3>
-<%= form_with(model: [@task_list, @task_list.tasks.new], local: true) do |form| %>
-  <%= form.text_field :description, placeholder: "Descrição da tarefa", required: true %>
-  <%= form.submit "Adicionar Tarefa" %>
-<% end %>
-
-<br>
-<%= link_to "Voltar", task_lists_path %> | 
-<%= link_to "Editar Lista", edit_task_list_path(@task_list) %>
+        <div class="row mt-3">
+          <div class="col-12">
+            <div class="form-floating">
+              <%= form.text_area :notes,
+                    class: "form-control",
+                    style: "height: 80px",
+                    placeholder: "Observações",
+                    id: "taskNotes" %>
+              <label for="taskNotes">Observações (opcional)</label>
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

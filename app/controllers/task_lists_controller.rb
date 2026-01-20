@@ -3,10 +3,11 @@ class TaskListsController < ApplicationController
   before_action :set_task_list, only: [:show, :edit, :update, :destroy]
 
   def index
-    @task_lists = current_user.task_lists.includes(:tasks)
-  end
-
-  def show
+    if user_signed_in?
+      @task_lists = current_user.task_lists.includes(:tasks)
+    else
+      redirect_to new_user_session_path
+    end
   end
 
   def new
@@ -20,7 +21,7 @@ class TaskListsController < ApplicationController
     @task_list = current_user.task_lists.new(task_list_params)
     
     if @task_list.save
-      redirect_to @task_list, notice: "Lista criada com sucesso!"
+      redirect_to @task_list
     else
       render :new, status: :unprocessable_entity
     end

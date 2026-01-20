@@ -10,7 +10,7 @@ class TasksController < ApplicationController
     @task = @task_list.tasks.new(task_params)
     
     if @task.save
-      redirect_to @task_list, notice: "Tarefa adicionada!"
+      redirect_to @task_list
     else
       redirect_to @task_list, alert: "Erro ao adicionar tarefa"
     end
@@ -45,6 +45,6 @@ class TasksController < ApplicationController
   end
   
   def task_params
-    params.require(:task).permit(:description, :completed)
+    params.require(:task).permit(:description, :completed, :due_date, :priority, :notes)
   end
 end

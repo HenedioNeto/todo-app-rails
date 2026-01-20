@@ -4,6 +4,9 @@ class Task < ApplicationRecord
   validates :description, presence: true
   
   attribute :completed, :boolean, default: false
+
+  scope :pending, -> { where(completed: false) }
+  scope :completed, -> { where(completed: true) }
   
   default_scope { order(:position) }
   
