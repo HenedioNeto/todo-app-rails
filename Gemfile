@@ -13,6 +13,7 @@ gem "tzinfo-data", platforms: %i[ windows jruby ]
 gem "bootsnap", require: false
 gem "devise", "~> 4.9"
 gem "devise-i18n"
+gem "image_processing", "~> 1.2"
 
 group :development, :test do
   gem "sqlite3", "~> 1.4"
