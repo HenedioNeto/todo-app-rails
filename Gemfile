@@ -16,7 +16,7 @@ gem "devise-i18n"
 gem "image_processing", "~> 1.2"
 
 group :development, :test do
-  gem "sqlite3", "~> 1.4"
+  gem "sqlite3", "~> 2.9"
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
 end
 
