@@ -11,7 +11,7 @@ gem "stimulus-rails"
 gem "jbuilder"
 gem "tzinfo-data", platforms: %i[ windows jruby ]
 gem "bootsnap", require: false
-gem "devise", "~> 4.9"
+gem "devise", "~> 5.0"
 gem "devise-i18n"
 gem "image_processing", "~> 1.2"
 
